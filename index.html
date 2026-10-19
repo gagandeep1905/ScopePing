@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f8fc" />
+  <meta name="description" content="ScopePing helps freelancers price extra work, clarify scope changes, and write clear client messages." />
+  <title>ScopePing — Keep the scope clear</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#workspace" aria-label="ScopePing home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 17.5 13 23l12-14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 3.5c6.9 0 12.5 5.6 12.5 12.5S22.9 28.5 16 28.5 3.5 22.9 3.5 16 9.1 3.5 16 3.5Z" fill="none" stroke="currentColor" stroke-width="1.7" opacity=".55"/></svg></span>
+        <span class="brand-name">scope<span>ping</span></span>
+      </a>
+
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <button class="nav-link active" data-view="workspace"><span class="nav-icon">◫</span><span>Workspace</span></button>
+        <button class="nav-link" data-view="requests"><span class="nav-icon">☷</span><span>Request log</span><span class="nav-count" id="sidebar-count">0</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <span class="help-spark">✳</span>
+          <strong>Keep work clear.</strong>
+          <p>Document the change before you start the extra work.</p>
+        </div>
+        <div class="profile-row">
+          <div class="avatar">Y</div>
+          <div class="profile-copy"><strong>Your workspace</strong><span>Local-only demo</span></div>
+          <span class="status-dot" title="Saved in this browser"></span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong id="crumb-current">Overview</strong></div>
+        <div class="topbar-right"><span class="save-indicator"><span class="tiny-dot"></span> Autosaved in this browser</span><button class="button button-quiet button-small" id="export-btn" title="Export request history">Export data ↗</button></div>
+      </header>
+
+      <section class="view active-view" id="workspace-view">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR FREELANCE CONTROL ROOM</div>
+            <h1>Keep the scope <span>clear.</span></h1>
+            <p class="heading-sub">Turn “one little change” into a clear plan, fair price, and client-ready reply.</p>
+          </div>
+          <div class="today-pill"><span class="calendar-icon">▦</span><span id="today-label">Your workspace</span></div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card stat-primary">
+            <div class="stat-top"><span>Open requests</span><span class="stat-icon icon-purple">↗</span></div>
+            <div class="stat-number" id="stat-open">0</div>
+            <div class="stat-note"><span class="status-mini-dot purple"></span> Waiting for a decision</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Pending add-ons</span><span class="stat-icon icon-amber">₹</span></div>
+            <div class="stat-number" id="stat-pending">₹0</div>
+            <div class="stat-note">Potential extra-work value</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Approved value</span><span class="stat-icon icon-green">✓</span></div>
+            <div class="stat-number" id="stat-approved">₹0</div>
+            <div class="stat-note">Marked approved in your log</div>
+          </article>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel project-panel">
+            <div class="panel-heading">
+              <div class="panel-title-wrap"><span class="section-icon">⌑</span><div><h2>Project baseline</h2><p>What did you originally agree to?</p></div></div>
+              <span class="step-tag">STEP 01</span>
+            </div>
+            <div class="form-grid">
+              <label class="field field-wide"><span>Project name</span><input id="project-name" type="text" placeholder="e.g. Northstar website" value="Website redesign" /></label>
+              <label class="field"><span>Client name <em>optional</em></span><input id="client-name" type="text" placeholder="e.g. Priya" /></label>
+              <label class="field"><span>Original project value</span><div class="input-with-prefix"><span>₹</span><input id="project-value" type="number" min="0" step="100" value="25000" /></div></label>
+              <label class="field"><span>Your hourly rate</span><div class="input-with-prefix"><span>₹</span><input id="hourly-rate" type="number" min="0" step="50" value="800" /></div></label>
+              <label class="field"><span>Included revision rounds</span><select id="revision-count"><option value="0">No revisions included</option><option value="1">1 round</option><option value="2" selected>2 rounds</option><option value="3">3 rounds</option><option value="4">4 rounds</option><option value="unlimited">Unlimited / not specified</option></select></label>
+              <label class="field field-wide"><span>What was included?</span><textarea id="included-scope" rows="3" placeholder="e.g. 5 pages, responsive design, contact form, 2 revision rounds">5-page responsive website, contact form, basic on-page SEO, 2 revision rounds</textarea><small>Use this as your reference when discussing a new request.</small></label>
+            </div>
+            <div class="baseline-footer"><span class="lock-icon">⌑</span><span>Your project details stay in this browser in this MVP.</span></div>
+          </section>
+
+          <section class="panel request-panel">
+            <div class="panel-heading">
+              <div class="panel-title-wrap"><span class="section-icon section-icon-purple">✳</span><div><h2>New change request</h2><p>Price it before saying yes.</p></div></div>
+              <span class="step-tag">STEP 02</span>
+            </div>
+            <label class="field field-wide"><span>What did the client ask for?</span><textarea id="request-description" rows="4" placeholder="Paste or summarize the request… e.g. Can we add a pricing page and a new testimonials section? Could you also make the contact form send to two emails?"></textarea></label>
+            <div class="analysis-actions">
+              <button class="button button-secondary button-full analyze-button" id="analyze-btn" type="button"><span>✦</span> Compare request with original scope <span class="button-arrow">→</span></button>
+              <p class="microcopy">When AI is enabled, this scope and client request are sent to the configured AI provider. Otherwise, ScopePing runs a basic local keyword check and labels it clearly.</p>
+            </div>
+            <section class="analysis-result" id="analysis-result" aria-live="polite" hidden>
+              <div class="analysis-top"><div><span class="analysis-kicker">SCOPE COMPARISON</span><h3 id="analysis-verdict">Review needed</h3></div><span class="analysis-mode" id="analysis-mode">LOCAL CHECK</span></div>
+              <p class="analysis-summary" id="analysis-summary"></p>
+              <div class="analysis-findings-grid">
+                <div class="analysis-finding"><h4>Likely covered</h4><ul id="analysis-included"></ul></div>
+                <div class="analysis-finding analysis-finding-extra"><h4>Possible extras</h4><ul id="analysis-extras"></ul></div>
+              </div>
+              <div class="analysis-questions"><h4>Clarify before agreeing</h4><ul id="analysis-questions"></ul></div>
+              <div class="analysis-recommendation"><div><span>Suggested starting estimate</span><strong id="analysis-estimate">2 hours · 1 day</strong></div><div class="analysis-fee-wrap"><span>Estimated add-on</span><strong id="analysis-fee">₹1,600</strong></div></div>
+              <p class="analysis-rationale" id="analysis-rationale"></p>
+              <button class="button button-primary button-full" id="apply-analysis-btn" type="button">Use suggested estimate</button>
+              <p class="analysis-disclaimer">Treat this as a draft, not a contractual decision. Check the original agreement and adjust hours, fee, and delivery date before sending.</p>
+            </section>
+            <div class="request-input-grid">
+              <label class="field"><span>Extra work estimate</span><div class="input-with-suffix"><input id="extra-hours" type="number" min="0" step="0.5" value="3" /><span>hours</span></div></label>
+              <label class="field"><span>Extra delivery time</span><div class="input-with-suffix"><input id="extra-days" type="number" min="0" step="1" value="2" /><span>days</span></div></label>
+            </div>
+            <div class="estimate-box">
+              <div><span class="estimate-label">Suggested add-on</span><div class="estimate-sub">Based on your hourly rate × extra hours</div></div>
+              <div class="estimate-value" id="suggested-fee">₹2,400</div>
+            </div>
+            <label class="field final-fee-field"><span>Quote to client <small>(editable)</small></span><div class="input-with-prefix quote-input"><span>₹</span><input id="final-fee" type="number" min="0" step="100" value="2400" /></div></label>
+            <div class="request-input-grid tone-grid">
+              <label class="field"><span>Message tone</span><select id="message-tone"><option value="friendly">Friendly</option><option value="professional" selected>Professional</option><option value="firm">Firm but polite</option></select></label>
+              <label class="field"><span>Language</span><select id="message-language"><option value="en" selected>English</option><option value="hinglish">Hinglish</option></select></label>
+            </div>
+            <button class="button button-primary button-full" id="generate-btn"><span>✦</span> Generate client reply <span class="button-arrow">→</span></button>
+            <p class="microcopy">Review the scope analysis and the details. Edit the message before sending; ScopePing never sends it to your client.</p>
+          </section>
+        </div>
+
+        <section class="panel reply-panel" id="reply-panel">
+          <div class="reply-heading-row">
+            <div class="panel-title-wrap"><span class="section-icon section-icon-green">↗</span><div><h2>Your client-ready reply</h2><p>Clear, calm, and documented. Make it sound like you.</p></div></div>
+            <span class="draft-status"><span></span> DRAFT</span>
+          </div>
+          <div class="reply-content-grid">
+            <div class="reply-preview-wrap">
+              <div class="reply-meta"><span class="reply-meta-label">MESSAGE PREVIEW</span><span id="reply-to-label">To: your client</span></div>
+              <div class="reply-message" id="reply-message" aria-live="polite">Hi! Thanks for sharing this request. I’ll review how it fits with our original scope and confirm the cost and timeline before I begin. That way, we’re both clear on what’s included.</div>
+              <div class="reply-actions"><button class="button button-primary" id="copy-btn">▣ Copy message</button><button class="button button-secondary" id="save-request-btn">Save to request log <span>→</span></button><span class="copy-feedback" id="copy-feedback" aria-live="polite"></span></div>
+            </div>
+            <aside class="impact-card">
+              <div class="impact-title">CHANGE SUMMARY <span>↗</span></div>
+              <div class="impact-line"><span>Estimated extra time</span><strong id="summary-hours">3 hours</strong></div>
+              <div class="impact-line"><span>Timeline extension</span><strong id="summary-days">2 days</strong></div>
+              <div class="impact-line"><span>Additional fee</span><strong id="summary-fee">₹2,400</strong></div>
+              <div class="impact-divider"></div>
+              <div class="impact-total-label">Updated project value <span>if approved</span></div>
+              <div class="impact-total" id="summary-total">₹27,400</div>
+              <p class="impact-footnote">This is a planning estimate, not a binding quote. Confirm the scope and revised deadline with your client.</p>
+            </aside>
+          </div>
+        </section>
+        <footer class="page-footer"><span>ScopePing <span class="footer-dot">·</span> Make the extra work make sense.</span><span>Early MVP <span class="footer-dot">·</span> No account required</span></footer>
+      </section>
+
+      <section class="view" id="requests-view">
+        <div class="page-heading request-log-heading">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR PAPER TRAIL</div><h1>Request <span>log.</span></h1><p class="heading-sub">Keep every extra request, quote, and decision in one place.</p></div>
+          <button class="button button-secondary" id="back-workspace-btn">＋ New request</button>
+        </div>
+        <div class="log-toolbar"><div class="search-wrap"><span>⌕</span><input id="log-search" type="search" placeholder="Search project or request…" /></div><select id="status-filter" aria-label="Filter by status"><option value="all">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="declined">Declined</option><option value="completed">Completed</option></select><span class="log-count" id="log-count">0 requests</span></div>
+        <div class="request-list" id="request-list"></div>
+        <div class="empty-state" id="empty-state"><div class="empty-illustration"><span>↗</span><span>₹</span><span>✓</span></div><h2>Your paper trail starts here.</h2><p>Generate a client reply and save the change request. It will appear here so you can keep track of the decision.</p><button class="button button-primary" id="empty-new-btn">Create your first request →</button></div>
+        <footer class="page-footer"><span>ScopePing <span class="footer-dot">·</span> Make the extra work make sense.</span><span>Requests are stored on this device only</span></footer>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
