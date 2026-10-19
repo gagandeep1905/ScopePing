@@ -9,7 +9,6 @@ const DEFAULT_MODEL = 'gemini-3.6-flash';
 
 const schema = {
   type: 'object',
-  additionalProperties: false,
   properties: {
     verdict: { type: 'string', enum: ['likely_in_scope', 'likely_out_of_scope', 'mixed', 'unclear'] },
     confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
