@@ -4,7 +4,7 @@
 
 - [ ] Deploy through Vercel and confirm the static UI and `/api/analyze` endpoint work.
 - [ ] Confirm `GEMINI_API_KEY` is stored only in Vercel Environment Variables.
-- [ ] Confirm `GEMINI_MODEL` is either unset (defaults to `gemini-3.6-flash`) or a model available to the API project.
+- [ ] Confirm `GEMINI_MODEL` is either unset (defaults to `gemini-3.8-flash`) or a model available to the API project.
 - [ ] Confirm AI success is labeled `AI ANALYSIS` and fallback is labeled `LOCAL CHECK`.
 - [ ] Test an extra request, a likely included revision, and a vague request.
 - [ ] Confirm suggested hours are applied only after the user presses **Use suggested estimate**.
@@ -18,7 +18,7 @@
 
 `GEMINI_API_KEY` is a server-only secret. Create a key in [Google AI Studio](https://aistudio.google.com/apikey) and configure it in Vercel Project Settings → Environment Variables. Do not place it in `index.html`, `app.js`, a committed `.env` file or browser local storage.
 
-`GEMINI_MODEL` is optional and defaults to `gemini-3.6-flash`. Free-tier eligibility and quotas are account/region/model dependent and may change; check [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) and [rate limits](https://ai.google.dev/gemini-api/docs/rate-limits).
+`GEMINI_MODEL` is optional and defaults to `gemini-3.8-flash`. Free-tier eligibility and quotas are account/region/model dependent and may change; check [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) and [rate limits](https://ai.google.dev/gemini-api/docs/rate-limits).
 
 After changing environment variables, redeploy the project. The old `OPENAI_API_KEY` and `OPENAI_MODEL` variables are no longer used and can be removed once the Gemini integration is verified.
 
