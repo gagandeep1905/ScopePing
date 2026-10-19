@@ -2,10 +2,10 @@
 
 ## Included
 - Switched server-side scope comparison from OpenAI Responses API to Google's Gemini generateContent API.
-- Default model: `gemini-3.6-flash`, configurable with `GEMINI_MODEL`.
+- Default model: `gemini-3.8-flash`, configurable with `GEMINI_MODEL`.
 - Server-side `GEMINI_API_KEY` configuration; no key is exposed to browser code.
 - Structured JSON response schema for in-scope/extras/clarification and time estimates.
-- More actionable, safe error messages for invalid key, permissions, quota/rate limits, missing model and malformed responses.
+- More actionable, safe error messages for invalid key, permissions, quota/rate limits, missing model, malformed responses and HTTP 503. Transient 503 responses are retried, with a fallback to Gemini 3.8 Flash when a custom model was configured.
 - Local keyword fallback remains available and clearly labelled.
 - Free-tier privacy warning added to app/docs.
 
