@@ -48,7 +48,15 @@ function safeProviderError(status, providerStatus = '', providerMessage = '') {
     return json({ error: 'gemini_model_not_found', message: 'Google Gemini could not find the configured model. Check GEMINI_MODEL; the default is gemini-3.6-flash.' }, 502);
   }
   if (status === 400) {
-    return json({ error: 'gemini_bad_request', message: 'Google Gemini rejected the request (HTTP 400). Check the model setting and request configuration.' }, 502);
+    // Google's error message is useful for debugging request/schema issues. Trim it and never return the API key.
+    const detail = String(providerMessage || 'No additional detail was returned.')
+      .replace(/(?:AIza[0-9A-Za-z_-]{20,})/g, '[redacted]')
+      .replace(/[\\r\\n\\t]+/g, ' ')
+      .slice(0, 360);
+    return json({
+      error: 'gemini_bad_request',
+      message: `Google Gemini rejected the request (HTTP 400): ${detail}`
+    }, 502);
   }
   return json({ error: 'gemini_request_failed', message: `Google Gemini returned HTTP ${status}. Check Vercel Function logs and Google AI Studio usage/limits.` }, 502);
 }
@@ -90,12 +98,9 @@ export default {
           generationConfig: {
             temperature: 0.2,
             maxOutputTokens: 1200,
-            responseFormat: {
-              text: {
-                mimeType: 'application/json',
-                schema
-              }
-            }
+            // Use the GenerateContent REST JSON-mode fields supported by Gemini 3.6 Flash.
+            responseMimeType: 'application/json',
+            responseSchema: schema
           }
         })
       });
