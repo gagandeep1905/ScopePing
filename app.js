@@ -212,7 +212,8 @@
       if ($('request-description').value.trim() !== requestText || baseline().scope !== scope) { toast('The scope or request changed. Run the comparison again.'); return; }
       const fallback = localScopeAnalysis(scope, requestText, $('revision-count').value);
       renderAnalysis(fallback, 'local');
-      toast('Showing a local keyword check. Configure OPENAI_API_KEY on Vercel for AI analysis.');
+      const reason = String(error?.message || 'Unknown AI error');
+      toast(`LOCAL CHECK — ${reason}`);
     } finally {
       button.disabled = false; button.classList.remove('is-loading'); button.innerHTML = '<span>✦</span> Compare request with original scope <span class="button-arrow">→</span>';
     }
