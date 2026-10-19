@@ -22,7 +22,7 @@ Open `index.html` in a modern browser. Project setup, local comparison, estimate
 1. Install Node.js 20 or newer.
 2. From this folder, run `npm install`.
 3. Run `npm run dev` and open the local URL shown by Vercel CLI.
-4. To enable Gemini locally, set `GEMINI_API_KEY` in your local environment before starting the dev server. `GEMINI_MODEL` is optional and defaults to `gemini-3.6-flash`. Keep the key private and never put it in browser JavaScript.
+4. To enable Gemini locally, set `GEMINI_API_KEY` in your local environment before starting the dev server. `GEMINI_MODEL` is optional and defaults to `gemini-3.8-flash`. Keep the key private and never put it in browser JavaScript.
 
 ## Deploy to Vercel
 
@@ -30,7 +30,7 @@ Open `index.html` in a modern browser. Project setup, local comparison, estimate
 2. Open the Vercel project connected to this repository. Use **Other** as the framework preset, repository root as the Root Directory, no custom build command, and no custom Output Directory override.
 3. In **Project Settings → Environment Variables**, add:
    - `GEMINI_API_KEY` — your private Google AI Studio API key (server-side only)
-   - `GEMINI_MODEL` — optional; defaults to `gemini-3.6-flash`
+   - `GEMINI_MODEL` — optional; defaults to `gemini-3.8-flash`
 4. Add the variables to Production and any Preview/Development environments you use, then redeploy.
 5. Test the comparison button. **AI ANALYSIS** means the Gemini API call succeeded; **LOCAL CHECK** means the fallback was used. The toast now gives a safe diagnostic message for common API failures.
 
