@@ -1,15 +1,22 @@
-# ScopePing 1.1 — Release notes
+# ScopePing 1.2 — Gemini API integration
 
 ## Included
-- Original-scope baseline and client-request input.
-- Server-side AI scope comparison endpoint at `/api/analyze`.
-- Clearly labelled local keyword fallback when no AI endpoint is available.
-- Suggested additional hours/days and a user-reviewed quote estimate.
-- Context-aware client reply builder.
-- Request log, local browser persistence, search/status filters, and JSON export.
-- Vercel deployment and security checklist.
+- Switched server-side scope comparison from OpenAI Responses API to Google's Gemini generateContent API.
+- Default model: `gemini-3.6-flash`, configurable with `GEMINI_MODEL`.
+- Server-side `GEMINI_API_KEY` configuration; no key is exposed to browser code.
+- Structured JSON response schema for in-scope/extras/clarification and time estimates.
+- More actionable, safe error messages for invalid key, permissions, quota/rate limits, missing model and malformed responses.
+- Local keyword fallback remains available and clearly labelled.
+- Free-tier privacy warning added to app/docs.
 
-## Important
-This package is Vercel-ready source code, not a live deployment. Real AI analysis is activated only after configuring `OPENAI_API_KEY` as a server-side environment variable in Vercel and redeploying. Do not place the key in `index.html` or `app.js`.
+## Deployment
+1. Create a key in [Google AI Studio](https://aistudio.google.com/apikey).
+2. In Vercel, add `GEMINI_API_KEY` (Secret) for Production and redeploy.
+3. Optionally add `GEMINI_MODEL=gemini-3.6-flash`.
+4. Test `https://your-domain/api/analyze` in a browser; a POST-only route should respond with `405 method_not_allowed` to a browser GET.
+5. Run a comparison in the app. `AI ANALYSIS` indicates success; `LOCAL CHECK` displays a safe error reason.
 
-The current MVP does not include login, database sync, quotas/rate limits, payment processing, or legal interpretation. Treat all suggestions as estimates for human review.
+## Free-tier privacy
+Google may use content submitted through unpaid Gemini API services to improve its products and may send prompts/outputs to human reviewers. Do not use real confidential client contracts or personal information with the free tier. Review Google’s current terms and pricing before public launch.
+
+The app is not legal advice. Human review is required. API free-tier availability and quotas can change.
