@@ -72,8 +72,21 @@ export default {
     }
 
     if (!upstream.ok) {
-      // Keep provider details and key material out of the browser response.
-      return json({ error: 'ai_request_failed', message: 'The AI request failed. Check the server configuration and try again.' }, 502);
+      // Return a safe diagnostic category/status only; never expose the key or raw provider response.
+      console.error('[ScopePing] OpenAI request failed with HTTP status', upstream.status);
+      if (upstream.status === 401) {
+        return json({ error: 'invalid_api_key', message: 'OpenAI rejected the API key (HTTP 401). Check that the key is valid and copied correctly.' }, 502);
+      }
+      if (upstream.status === 403) {
+        return json({ error: 'provider_forbidden', message: 'OpenAI returned HTTP 403. Check API project permissions or organization restrictions.' }, 502);
+      }
+      if (upstream.status === 429) {
+        return json({ error: 'api_quota_or_rate_limit', message: 'OpenAI returned HTTP 429. Check API billing, available credits, and rate limits.' }, 502);
+      }
+      if (upstream.status === 400) {
+        return json({ error: 'provider_bad_request', message: 'OpenAI rejected the request (HTTP 400). Check the model setting and API request format.' }, 502);
+      }
+      return json({ error: 'ai_request_failed', message: `OpenAI returned HTTP ${upstream.status}. Check the Vercel Function logs for details.` }, 502);
     }
 
     let payload;
