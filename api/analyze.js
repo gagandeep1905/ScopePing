@@ -116,19 +116,16 @@ export default {
 
     let upstream;
     let usedModel = model;
+    // A model-level 503 can be temporary or model-specific. Try distinct documented Flash models
+    // rather than repeatedly calling the same overloaded model. Only 503 triggers model failover.
+    const modelCandidates = [...new Set([model, DEFAULT_MODEL, 'gemini-3.7-flash', 'gemini-3.6-flash'])];
     try {
-      upstream = await callGemini(model);
-      // A 503 is usually transient. If a custom/older model was configured, try the current stable Flash model.
-      if (upstream.status === 503 && model !== DEFAULT_MODEL) {
-        try { await upstream.body?.cancel(); } catch { /* ignore cancel errors */ }
-        usedModel = DEFAULT_MODEL;
-        upstream = await callGemini(DEFAULT_MODEL);
-      }
-      // Retry once after a short pause for a transient 503. This stays bounded to two additional calls at most.
-      if (upstream.status === 503) {
-        try { await upstream.body?.cancel(); } catch { /* ignore cancel errors */ }
-        await new Promise(resolve => setTimeout(resolve, 500));
+      for (let i = 0; i < modelCandidates.length; i++) {
+        usedModel = modelCandidates[i];
         upstream = await callGemini(usedModel);
+        if (upstream.status !== 503 || i === modelCandidates.length - 1) break;
+        try { await upstream.body?.cancel(); } catch { /* ignore cancel errors */ }
+        await new Promise(resolve => setTimeout(resolve, 300 * (i + 1)));
       }
     } catch {
       return json({ error: 'gemini_unavailable', message: 'Google Gemini could not be reached. Check the network/runtime and use the local comparison for now.' }, 502);
