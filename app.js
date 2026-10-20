@@ -315,6 +315,296 @@
       return true;
     } catch { return false; }
   }
+
+  function downloadChangeOrderPdf() {
+    const b = baseline();
+    const description = $('request-description').value.trim();
+    if (!b.scope) { toast('Add the original agreed scope first.'); $('included-scope').focus(); return; }
+    if (!description) { toast('Add the client request before creating a change order.'); $('request-description').focus(); return; }
+
+    const jsPDF = window.jspdf && window.jspdf.jsPDF;
+    if (!jsPDF) {
+      toast('The PDF tool did not load. Check your internet connection, refresh the page, and try again.');
+      return;
+    }
+
+    const hours = num('extra-hours');
+    const days = num('extra-days');
+    const fee = num('final-fee');
+    const updatedValue = b.projectValue + fee;
+    const analysisIsCurrent = Boolean(lastAnalysis && lastAnalysisRequest === description && lastAnalysisScope === b.scope);
+    const analysis = analysisIsCurrent ? lastAnalysis : null;
+    const analysisMode = analysisIsCurrent ? ($('analysis-mode')?.textContent || 'SCOPE CHECK') : 'NOT RUN';
+    const issueDate = new Date();
+    const dateLabel = issueDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dateStamp = issueDate.toISOString().slice(0, 10);
+    const reference = 'SP-' + dateStamp.replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+
+    // Standard PDF fonts are ASCII-focused; normalize currency and smart punctuation for reliable rendering.
+    const pdfText = (value) => String(value ?? '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/₹/g, 'INR ')
+      .replace(/[’‘]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/[–—]/g, '-')
+      .replace(/…/g, '...')
+      .replace(/[•·]/g, '-')
+      .replace(/[^\x20-\x7E\n\r\t]/g, ' ')
+      .trim();
+    const pdfMoney = (amount) => 'INR ' + Math.round(Number(amount) || 0).toLocaleString('en-IN');
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 16;
+    const innerW = pageW - margin * 2;
+    let y = 46;
+
+    const colors = {
+      purple: [91, 79, 230],
+      ink: [39, 43, 68],
+      body: [86, 92, 117],
+      muted: [130, 136, 158],
+      line: [225, 228, 241],
+      pale: [248, 248, 255],
+      lavender: [241, 239, 255],
+      green: [35, 128, 91],
+      amber: [159, 104, 31],
+      white: [255, 255, 255]
+    };
+
+    function runningHeader() {
+      doc.setFillColor(248, 248, 255);
+      doc.rect(0, 0, pageW, 13, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...colors.purple);
+      doc.text('SCOPEPING  /  CHANGE ORDER', margin, 8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...colors.muted);
+      doc.text(reference, pageW - margin, 8.5, { align: 'right' });
+    }
+
+    function ensureSpace(height) {
+      if (y + height <= 278) return;
+      doc.addPage();
+      runningHeader();
+      y = 21;
+    }
+
+    function sectionTitle(number, title) {
+      ensureSpace(13);
+      y += 2;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...colors.purple);
+      doc.text(number + '  ' + pdfText(title.toUpperCase()), margin, y);
+      y += 3;
+      doc.setDrawColor(...colors.line);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 6;
+    }
+
+    function drawBody(text, options = {}) {
+      const size = options.size || 9;
+      const color = options.color || colors.body;
+      const left = options.x === undefined ? margin : options.x;
+      const width = options.width || innerW;
+      const lineH = size * 0.46 + 1.5;
+      const paragraphs = pdfText(text).split(/\r?\n/);
+      doc.setFont('helvetica', options.bold ? 'bold' : 'normal');
+      doc.setFontSize(size);
+      doc.setTextColor(...color);
+      for (const paragraph of paragraphs) {
+        if (!paragraph.trim()) {
+          y += 2;
+          continue;
+        }
+        const lines = doc.splitTextToSize(paragraph, width);
+        for (const line of lines) {
+          ensureSpace(lineH + 1);
+          doc.text(line, left, y);
+          y += lineH;
+        }
+      }
+      y += options.after === undefined ? 2 : options.after;
+    }
+
+    function drawPairRow(leftLabel, leftValue, rightLabel, rightValue) {
+      const gap = 5;
+      const colW = (innerW - gap) / 2;
+      const valueW = colW - 8;
+      const lLines = doc.splitTextToSize(pdfText(leftValue || 'To be completed'), valueW);
+      const rLines = doc.splitTextToSize(pdfText(rightValue || 'To be completed'), valueW);
+      const maxLines = Math.max(lLines.length, rLines.length, 1);
+      const boxH = Math.max(15, 9.5 + maxLines * 4.2);
+      ensureSpace(boxH + 3);
+      const top = y;
+      const cells = [
+        { x: margin, label: leftLabel, lines: lLines },
+        { x: margin + colW + gap, label: rightLabel, lines: rLines }
+      ];
+      for (const cell of cells) {
+        doc.setFillColor(...colors.pale);
+        doc.setDrawColor(...colors.line);
+        doc.roundedRect(cell.x, top, colW, boxH, 2, 2, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7);
+        doc.setTextColor(...colors.muted);
+        doc.text(pdfText(cell.label.toUpperCase()), cell.x + 4, top + 4.8);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(...colors.ink);
+        cell.lines.forEach((line, i) => doc.text(line, cell.x + 4, top + 9.5 + i * 4.1));
+      }
+      y = top + boxH + 3;
+    }
+
+    function drawList(label, items) {
+      const list = Array.isArray(items) ? items.filter(Boolean).slice(0, 4) : [];
+      drawBody(label, { size: 8.5, bold: true, color: colors.ink, after: 1 });
+      if (!list.length) {
+        drawBody('None identified in the current analysis.', { size: 8.5, x: margin + 3, width: innerW - 3, after: 1 });
+        return;
+      }
+      list.forEach(item => drawBody('- ' + item, { size: 8.5, x: margin + 3, width: innerW - 3, after: 0.5 }));
+      y += 1;
+    }
+
+    // Branded first-page header
+    doc.setFillColor(...colors.purple);
+    doc.rect(0, 0, pageW, 37, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...colors.white);
+    doc.text('SCOPEPING', margin, 11);
+    doc.setFontSize(19);
+    doc.text('CHANGE ORDER', margin, 23);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('Additional work proposal and client approval', margin, 30);
+    doc.setFontSize(8);
+    doc.text(reference, pageW - margin, 11, { align: 'right' });
+    doc.text('PREPARED ' + dateLabel.toUpperCase(), pageW - margin, 18, { align: 'right' });
+
+    // Reference panel
+    doc.setFillColor(...colors.lavender);
+    doc.roundedRect(margin, y, innerW, 13, 2.5, 2.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...colors.purple);
+    doc.text('PROPOSED CHANGE ORDER', margin + 4, y + 5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.body);
+    doc.text('Effective only after written approval by both parties', margin + 4, y + 9.5);
+    y += 18;
+
+    sectionTitle('01', 'Project and client');
+    drawPairRow('Project', b.projectName, 'Client', b.clientName || 'Client name to be completed');
+    drawPairRow('Original project value', pdfMoney(b.projectValue), 'Freelancer hourly rate', pdfMoney(b.hourlyRate) + ' / hour');
+    drawPairRow('Included revision rounds', formatList(b.revisions), 'Document date', dateLabel);
+
+    sectionTitle('02', 'Original agreed scope');
+    drawBody(b.scope, { size: 9, color: colors.body, after: 3 });
+
+    sectionTitle('03', 'Requested change');
+    drawBody(description, { size: 10, color: colors.ink, after: 3 });
+
+    sectionTitle('04', 'Scope review');
+    if (analysis) {
+      const verdictLabels = {
+        likely_in_scope: 'Likely within scope',
+        likely_out_of_scope: 'Likely extra work',
+        mixed: 'Mixed / partly unclear',
+        unclear: 'Review needed'
+      };
+      drawBody('Review source: ' + pdfText(analysisMode) + '  |  Assessment: ' + (verdictLabels[analysis.verdict] || 'Review needed') + '  |  Confidence: ' + (analysis.confidence || 'low'), { size: 8.5, bold: true, color: colors.ink });
+      drawBody(analysis.summary || 'Review the request against the original agreement.', { size: 8.5 });
+      drawList('LIKELY INCLUDED', analysis.likelyIncluded);
+      drawList('POSSIBLE EXTRAS', analysis.possibleExtras);
+      if (Array.isArray(analysis.clarifyingQuestions) && analysis.clarifyingQuestions.length) {
+        drawList('QUESTIONS TO CONFIRM', analysis.clarifyingQuestions);
+      }
+    } else {
+      drawBody('No current scope analysis is attached to this document. Compare the requested change against the signed proposal or statement of work before approval.', { size: 8.5 });
+    }
+
+    sectionTitle('05', 'Proposed change impact');
+    const metrics = [
+      { label: 'EXTRA WORK', value: plural(hours, 'hour') },
+      { label: 'TIMELINE EXTENSION', value: plural(days, 'day') },
+      { label: 'HOURLY RATE', value: pdfMoney(b.hourlyRate) },
+      { label: 'CHANGE ORDER FEE', value: pdfMoney(fee) }
+    ];
+    const metricGap = 3;
+    const metricW = (innerW - metricGap * 3) / 4;
+    ensureSpace(25);
+    metrics.forEach((metric, i) => {
+      const x = margin + i * (metricW + metricGap);
+      doc.setFillColor(i === 3 ? 241 : 248, i === 3 ? 239 : 248, i === 3 ? 255 : 255);
+      doc.setDrawColor(...colors.line);
+      doc.roundedRect(x, y, metricW, 22, 2, 2, 'FD');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.3);
+      doc.setTextColor(...colors.muted);
+      doc.text(pdfText(metric.label), x + 2.5, y + 5);
+      doc.setFontSize(metric.value.length > 13 ? 7.2 : 8.2);
+      doc.setTextColor(...(i === 3 ? colors.purple : colors.ink));
+      const lines = doc.splitTextToSize(pdfText(metric.value), metricW - 5);
+      doc.text(lines.slice(0, 2), x + 2.5, y + 12);
+    });
+    y += 27;
+
+    doc.setFillColor(...colors.lavender);
+    doc.roundedRect(margin, y, innerW, 16, 2.5, 2.5, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...colors.body);
+    doc.text('UPDATED PROJECT VALUE IF THIS CHANGE IS APPROVED', margin + 4, y + 6);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...colors.purple);
+    doc.text(pdfMoney(updatedValue), pageW - margin - 4, y + 10.5, { align: 'right' });
+    y += 21;
+    drawBody('The fee and time figures above are planning estimates supplied for review. Confirm final deliverables, dependencies, due dates, taxes, payment timing and any milestone effects with the client before starting.', { size: 8, after: 2 });
+
+    sectionTitle('06', 'Approval and terms');
+    drawBody('This change order describes proposed additional work for the project above. The additional work should not begin until the client and freelancer approve the change, fee and revised timeline in writing. Except for the changes explicitly approved here, the original project agreement remains in effect. Review this document against the signed agreement and adapt it for your contract and jurisdiction; it is not legal advice.', { size: 8.5, after: 4 });
+
+    ensureSpace(23);
+    const sigY = y + 7;
+    doc.setDrawColor(...colors.muted);
+    doc.setLineWidth(0.35);
+    doc.line(margin, sigY, margin + 76, sigY);
+    doc.line(pageW / 2 + 5, sigY, pageW - margin, sigY);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...colors.ink);
+    doc.text('CLIENT APPROVAL / DATE', margin, sigY + 5);
+    doc.text('FREELANCER APPROVAL / DATE', pageW / 2 + 5, sigY + 5);
+    y = sigY + 11;
+    drawBody('Approval can be recorded by signatures above or by written confirmation that clearly identifies this change order.', { size: 7.5, color: colors.muted, after: 0 });
+
+    // Consistent footer and page numbering on all pages
+    const totalPages = doc.getNumberOfPages();
+    for (let page = 1; page <= totalPages; page++) {
+      doc.setPage(page);
+      doc.setDrawColor(...colors.line);
+      doc.setLineWidth(0.3);
+      doc.line(margin, 284, pageW - margin, 284);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...colors.muted);
+      doc.text('Prepared with ScopePing | Draft for review - not legal advice', margin, 289);
+      doc.text('Page ' + page + ' of ' + totalPages, pageW - margin, 289, { align: 'right' });
+    }
+
+    const slug = pdfText(b.projectName).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'project';
+    doc.save('scopeping-change-order-' + slug + '-' + dateStamp + '.pdf');
+    toast('Change-order PDF downloaded. Review all terms before sending.');
+  }
+
   function exportData() {
     const payload = { product: 'ScopePing', exportedAt: new Date().toISOString(), baseline: baseline(), requests };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
