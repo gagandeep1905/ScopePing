@@ -628,6 +628,7 @@
   $('included-scope').addEventListener('input', invalidateAnalysis);
   $('generate-btn').addEventListener('click', generateMessage);
   $('save-request-btn').addEventListener('click', saveDraftToLog);
+  $('download-change-order-btn').addEventListener('click', downloadChangeOrderPdf);
   $('copy-btn').addEventListener('click', async () => {
     const ok = await copyText($('reply-message').textContent);
     $('copy-feedback').textContent = ok ? 'Copied to clipboard' : 'Select and copy the message manually';
