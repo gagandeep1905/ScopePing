@@ -11,6 +11,7 @@ ScopePing helps freelance web developers and designers compare a client request 
 - Findings: likely-covered items, possible extras, clarifying questions, confidence-sensitive wording and a cautious starting estimate.
 - Editable quote: review the estimate and apply suggested hours/days; the add-on fee is recalculated from the user's hourly rate and rounded to the nearest ₹100.
 - Reply builder and request log: edit replies, search and update request status, copy replies, delete records and export JSON.
+- Client-ready change-order PDF: download a branded proposal with the original scope, requested change, current analysis findings, fee, time estimate, revised project value, approval terms and signature/date lines. PDF creation runs in the browser and does not use an additional AI call.
 - Local persistence: data stays in the current browser's localStorage; there is no user account or cloud sync.
 
 ## Quick start (offline/local fallback)
@@ -35,6 +36,8 @@ Open `index.html` in a modern browser. Project setup, local comparison, estimate
 5. Test the comparison button. **AI ANALYSIS** means the Gemini API call succeeded; **LOCAL CHECK** means the fallback was used. The toast now gives a safe diagnostic message for common API failures.
 
 Create a key in [Google AI Studio](https://aistudio.google.com/apikey). The Gemini API offers a free tier for eligible models, including Gemini 3.6 Flash at the time this version was prepared, subject to account, region, and model-specific quota limits. Check the [current pricing](https://ai.google.dev/gemini-api/docs/pricing) and [usage limits](https://ai.google.dev/gemini-api/docs/rate-limits).
+
+The client-side PDF generator uses jsPDF 4.2.1 loaded from jsDelivr; PDF content is generated in the browser and is not uploaded to the server. Keep an internet connection available so the PDF library can load.
 
 The endpoint lives at `api/analyze.js` and is served as `/api/analyze`. The secret is read from `process.env.GEMINI_API_KEY` only; it is never returned to the browser. The previous `OPENAI_API_KEY` and `OPENAI_MODEL` variables are no longer used by this version and can be removed after verifying the Gemini setup.
 
