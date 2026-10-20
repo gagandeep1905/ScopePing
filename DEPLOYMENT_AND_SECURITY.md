@@ -10,9 +10,14 @@
 - [ ] Confirm suggested hours are applied only after the user presses **Use suggested estimate**.
 - [ ] Confirm quotes and client replies remain editable and are never sent automatically.
 - [ ] Test copy message, saving to request log, status changes, search and JSON export.
+- [ ] Download a change-order PDF; verify project details, change description, fee, timeline, approval text, signature lines and page footer.
 - [ ] Open the site on a phone-sized viewport and confirm the analysis panel is readable.
 - [ ] Publish a privacy notice before collecting user data or marketing publicly.
 - [ ] Decide retention, model-provider disclosure and a support contact before launch.
+
+## PDF generation
+
+The change-order PDF is created locally in the browser with jsPDF loaded from jsDelivr. No PDF content is sent to a separate PDF service. The CDN dependency must load for direct PDF download to work.
 
 ## Environment variables
 
