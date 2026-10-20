@@ -5,7 +5,7 @@
  */
 const MAX_SCOPE = 6000;
 const MAX_REQUEST = 6000;
-const DEFAULT_MODEL = 'gemini-3.8-flash';
+const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
 
 const schema = {
   type: 'object',
@@ -44,7 +44,7 @@ function safeProviderError(status, providerStatus = '', providerMessage = '') {
     return json({ error: 'gemini_quota_or_rate_limit', message: 'Google Gemini returned HTTP 429. Check Google AI Studio → Usage and limits; the free tier has model-specific request and token limits.' }, 502);
   }
   if (status === 404) {
-    return json({ error: 'gemini_model_not_found', message: 'Google Gemini could not find the configured model. Check GEMINI_MODEL; the default is gemini-3.8-flash.' }, 502);
+    return json({ error: 'gemini_model_not_found', message: 'Google Gemini could not find the configured model. Check GEMINI_MODEL; the default is gemini-3.5-flash-lite.' }, 502);
   }
   const detail = String(providerMessage || '')
     .replace(/(?:AIza[0-9A-Za-z_-]{20,})/g, '[redacted]')
@@ -118,7 +118,7 @@ export default {
     let usedModel = model;
     // A model-level 503 can be temporary or model-specific. Try distinct documented Flash models
     // rather than repeatedly calling the same overloaded model. Only 503 triggers model failover.
-    const modelCandidates = [...new Set([model, DEFAULT_MODEL, 'gemini-3.7-flash', 'gemini-3.6-flash'])];
+    const modelCandidates = [...new Set([model, DEFAULT_MODEL, 'gemini-3.1-flash-lite', 'gemini-3.8-flash', 'gemini-3.6-flash'])];
     try {
       for (let i = 0; i < modelCandidates.length; i++) {
         usedModel = modelCandidates[i];
