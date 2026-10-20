@@ -1,6 +1,7 @@
-# ScopePing 1.2 — Gemini API integration
+# ScopePing 1.3 — Gemini API + change-order PDF
 
 ## Included
+- Branded client-ready change-order PDF download (client-side jsPDF): project and client details, original scope, requested change, current scope-analysis findings, estimated hours/days, fee, revised total, approval terms and signature/date lines.
 - Switched server-side scope comparison from OpenAI Responses API to Google's Gemini generateContent API.
 - Default model: `gemini-3.8-flash`, configurable with `GEMINI_MODEL`.
 - Server-side `GEMINI_API_KEY` configuration; no key is exposed to browser code.
