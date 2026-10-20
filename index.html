@@ -137,7 +137,7 @@
             <div class="reply-preview-wrap">
               <div class="reply-meta"><span class="reply-meta-label">MESSAGE PREVIEW</span><span id="reply-to-label">To: your client</span></div>
               <div class="reply-message" id="reply-message" aria-live="polite">Hi! Thanks for sharing this request. I’ll review how it fits with our original scope and confirm the cost and timeline before I begin. That way, we’re both clear on what’s included.</div>
-              <div class="reply-actions"><button class="button button-primary" id="copy-btn">▣ Copy message</button><button class="button button-secondary" id="save-request-btn">Save to request log <span>→</span></button><span class="copy-feedback" id="copy-feedback" aria-live="polite"></span></div>
+              <div class="reply-actions"><button class="button button-primary" id="copy-btn">▣ Copy message</button><button class="button button-secondary" id="save-request-btn">Save to request log <span>→</span></button><button class="button button-secondary" id="download-change-order-btn" type="button">↓ Download change-order PDF</button><span class="copy-feedback" id="copy-feedback" aria-live="polite"></span></div>
             </div>
             <aside class="impact-card">
               <div class="impact-title">CHANGE SUMMARY <span>↗</span></div>
@@ -167,6 +167,7 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
