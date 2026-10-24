@@ -42,7 +42,7 @@ def footer(canvas, doc):
     canvas.line(16*mm, 14*mm, A4[0]-16*mm, 14*mm)
     canvas.setFont("Helvetica", 7)
     canvas.setFillColor(colors.HexColor("#858AA0"))
-    canvas.drawString(16*mm, 9*mm, "ScopePing | Draft template - review before use")
+    canvas.drawString(16*mm, 9*mm, "ScopePing | Draft template - not legal advice")
     canvas.drawRightString(A4[0]-16*mm, 9*mm, f"Page {doc.page}")
     canvas.restoreState()
 
@@ -118,7 +118,7 @@ def build_change_order(path, sample=False):
     story += [tab, Paragraph("5. CLARIFICATIONS / EXCLUSIONS", styles["Section"]), Paragraph("- [Open question / exclusion 1]<br/>- [Open question / exclusion 2]<br/>- Taxes, payment dates and delivery dependencies: [Specify]", styles["Field"]), Paragraph("6. APPROVAL", styles["Section"]), Paragraph("The additional work should not begin until the client and freelancer have approved the revised scope, fee and timeline in writing. Except for the changes explicitly approved here, the original agreement remains in effect. Review and adapt this template to the signed agreement and applicable law.", styles["BodySP"]), Spacer(1, 7)]
     sign = Table([[Paragraph("CLIENT APPROVAL / DATE", styles["SmallSP"]), Paragraph("FREELANCER APPROVAL / DATE", styles["SmallSP"])], [Paragraph("____________________________________", styles["BodySP"]), Paragraph("____________________________________", styles["BodySP"])]], colWidths=[87*mm, 87*mm], rowHeights=[9*mm, 12*mm])
     sign.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"BOTTOM"),("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),8)]))
-    story += [sign, Spacer(1, 5), Paragraph("Template only — not legal advice. Estimates are examples, not a quote for any actual project. Verify scope, prices, deadlines, taxes and payment terms before sending.", styles["SmallSP"])]
+    story += [sign]
     doc = SimpleDocTemplate(str(path), pagesize=A4, rightMargin=16*mm, leftMargin=16*mm, topMargin=17*mm, bottomMargin=20*mm, title=title, author="ScopePing")
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
