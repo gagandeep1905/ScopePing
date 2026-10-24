@@ -1,0 +1,49 @@
+name: Build Gumroad-ready distribution
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/package-gumroad.yml'
+      - 'scripts/build_gumroad_package.py'
+      - 'product/**'
+      - 'index.html'
+      - 'app.js'
+      - 'styles.css'
+      - 'api/**'
+      - 'vercel.json'
+      - 'package.json'
+      - '.env.example'
+      - 'README.md'
+      - 'DEPLOYMENT_AND_SECURITY.md'
+      - 'RELEASE_NOTES.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PDF generator
+        run: python -m pip install --disable-pip-version-check reportlab
+
+      - name: Build customer download
+        run: python scripts/build_gumroad_package.py
+
+      - name: Upload Gumroad package
+        uses: actions/upload-artifact@v4
+        with:
+          name: scopeping-gumroad-ready-package
+          path: dist/ScopePing-Gumroad-Ready.zip
+          if-no-files-found: error
+          retention-days: 30
