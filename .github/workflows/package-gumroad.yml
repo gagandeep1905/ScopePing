@@ -3,20 +3,6 @@ name: Build Gumroad-ready distribution
 on:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/package-gumroad.yml'
-      - 'scripts/build_gumroad_package.py'
-      - 'product/**'
-      - 'index.html'
-      - 'app.js'
-      - 'styles.css'
-      - 'api/**'
-      - 'vercel.json'
-      - 'package.json'
-      - '.env.example'
-      - 'README.md'
-      - 'DEPLOYMENT_AND_SECURITY.md'
-      - 'RELEASE_NOTES.md'
   workflow_dispatch:
 
 permissions:
