@@ -1,0 +1,30 @@
+SCOPEPING — SINGLE-PURCHASER SOURCE KIT LICENSE
+Version 1.0
+
+This license is a plain-language default for this digital download. It is not legal advice. The seller should have this license reviewed for the intended jurisdictions and store policies before publication.
+
+1. LICENSE GRANT
+After purchase, the purchaser receives a non-exclusive, non-transferable license to download, use, run, and modify the included ScopePing files for the purchaser's own freelance, personal, or business workflow.
+
+2. PERMITTED USE
+The purchaser may deploy a private or public instance for their own work; customize the interface, text and workflow; and use generated documents in their own client relationships.
+
+3. RESTRICTIONS
+The purchaser may not resell, sublicense, share, publish, redistribute, or repackage the source files or substantially similar template bundle as a standalone product; may not claim ownership of the original seller-authored source; and may not use the files to create a competing source-code/template pack for resale.
+
+4. THIRD-PARTY SERVICES
+The product does not include Google/Gemini API access, API credits, hosting, domains or any third-party service. The purchaser is responsible for provider keys, charges, limits, privacy terms and compliance with applicable third-party terms. Third-party libraries and services remain subject to their own licenses and terms.
+
+5. NO WARRANTY
+The files are provided "as is" to the maximum extent permitted by law. No promise is made that the product will be error-free, fit every use case, remain compatible with every provider/model, or generate accurate legal or commercial conclusions.
+
+6. NO LEGAL OR FINANCIAL ADVICE
+Analysis and fee/time estimates are informational planning aids, not legal, tax, accounting, or financial advice. The purchaser must verify the scope, estimates, client approvals and contract terms.
+
+7. TERMINATION
+This license terminates if the purchaser materially breaches its terms. Upon termination, stop using and delete copies except where retaining a copy is legally required.
+
+8. CONTACT
+For product questions, use the support contact shown on the Gumroad listing.
+
+If any term is unenforceable, the remaining terms continue to the extent permitted by applicable law.
