@@ -143,6 +143,9 @@ def copy_guides():
     GUIDE.mkdir(parents=True, exist_ok=True)
     source = ROOT / "product"
     for p in source.glob("*"):
+        # Seller-only page copy is kept in the repository, not in the customer download.
+        if p.name == "GUMROAD_PRODUCT_LISTING.md":
+            continue
         if p.is_file() and p.suffix.lower() in {".md", ".txt"}:
             shutil.copy2(p, GUIDE / p.name)
     for name in ["DEPLOYMENT_AND_SECURITY.md", "RELEASE_NOTES.md"]:
