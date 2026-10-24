@@ -26,11 +26,11 @@ def make_styles():
     muted = colors.HexColor("#676D86")
     base.add(ParagraphStyle(name="Brand", parent=base["Normal"], fontName="Helvetica-Bold", fontSize=9, leading=13, textColor=purple, spaceAfter=6))
     base.add(ParagraphStyle(name="Hero", parent=base["Title"], fontName="Helvetica-Bold", fontSize=24, leading=28, textColor=ink, spaceAfter=7))
-    base.add(ParagraphStyle(name="SubHero", parent=base["Normal"], fontName="Helvetica", fontSize=10, leading=15, textColor=muted, spaceAfter=12))
-    base.add(ParagraphStyle(name="Section", parent=base["Heading2"], fontName="Helvetica-Bold", fontSize=12, leading=16, textColor=purple, spaceBefore=13, spaceAfter=6, keepWithNext=True))
-    base.add(ParagraphStyle(name="BodySP", parent=base["BodyText"], fontName="Helvetica", fontSize=9, leading=13, textColor=ink, spaceAfter=6))
+    base.add(ParagraphStyle(name="SubHero", parent=base["Normal"], fontName="Helvetica", fontSize=10, leading=14, textColor=muted, spaceAfter=8))
+    base.add(ParagraphStyle(name="Section", parent=base["Heading2"], fontName="Helvetica-Bold", fontSize=10, leading=13, textColor=purple, spaceBefore=7, spaceAfter=3, keepWithNext=True))
+    base.add(ParagraphStyle(name="BodySP", parent=base["BodyText"], fontName="Helvetica", fontSize=8.5, leading=11, textColor=ink, spaceAfter=3))
     base.add(ParagraphStyle(name="SmallSP", parent=base["BodyText"], fontName="Helvetica", fontSize=7.5, leading=10, textColor=muted, spaceAfter=4))
-    base.add(ParagraphStyle(name="Field", parent=base["BodyText"], fontName="Helvetica", fontSize=9, leading=13, textColor=ink, borderColor=colors.HexColor("#E1E4F1"), borderWidth=0.5, borderPadding=7, spaceAfter=7))
+    base.add(ParagraphStyle(name="Field", parent=base["BodyText"], fontName="Helvetica", fontSize=9, leading=13, textColor=ink, borderColor=colors.HexColor("#E1E4F1"), borderWidth=0.5, borderPadding=5, spaceAfter=4))
     base.add(ParagraphStyle(name="Callout", parent=base["BodyText"], fontName="Helvetica-Bold", fontSize=9, leading=13, textColor=purple, backColor=colors.HexColor("#F1EFFF"), borderPadding=8, spaceBefore=6, spaceAfter=10))
     base.add(ParagraphStyle(name="CenterSP", parent=base["BodyText"], alignment=TA_CENTER, fontName="Helvetica", fontSize=8, leading=11, textColor=muted))
     return base
@@ -115,10 +115,10 @@ def build_change_order(path, sample=False):
     ]
     tab = Table([[Paragraph(f"<b>{esc(k)}</b>", styles["BodySP"]), Paragraph(esc(v), styles["BodySP"])] for k,v in impact], colWidths=[55*mm, 120*mm])
     tab.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),colors.HexColor("#F5F3FF")),("GRID",(0,0),(-1,-1),0.5,colors.HexColor("#E1E4F1")),("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),8),("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),2)]))
-    story += [tab, Paragraph("5. CLARIFICATIONS / EXCLUSIONS", styles["Section"]), Paragraph("- [Open question / exclusion 1]<br/>- [Open question / exclusion 2]<br/>- Taxes, payment dates and delivery dependencies: [Specify]", styles["Field"]), Paragraph("6. APPROVAL", styles["Section"]), Paragraph("The additional work should not begin until the client and freelancer have approved the revised scope, fee and timeline in writing. Except for the changes explicitly approved here, the original agreement remains in effect. Review and adapt this template to the signed agreement and applicable law.", styles["BodySP"]), Spacer(1, 18)]
+    story += [tab, Paragraph("5. CLARIFICATIONS / EXCLUSIONS", styles["Section"]), Paragraph("- [Open question / exclusion 1]<br/>- [Open question / exclusion 2]<br/>- Taxes, payment dates and delivery dependencies: [Specify]", styles["Field"]), Paragraph("6. APPROVAL", styles["Section"]), Paragraph("The additional work should not begin until the client and freelancer have approved the revised scope, fee and timeline in writing. Except for the changes explicitly approved here, the original agreement remains in effect. Review and adapt this template to the signed agreement and applicable law.", styles["BodySP"]), Spacer(1, 7)]
     sign = Table([[Paragraph("CLIENT APPROVAL / DATE", styles["SmallSP"]), Paragraph("FREELANCER APPROVAL / DATE", styles["SmallSP"])], [Paragraph("____________________________________", styles["BodySP"]), Paragraph("____________________________________", styles["BodySP"])]], colWidths=[87*mm, 87*mm], rowHeights=[9*mm, 12*mm])
     sign.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"BOTTOM"),("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),8)]))
-    story += [sign, Spacer(1, 12), Paragraph("Template only — not legal advice. Estimates are examples, not a quote for any actual project. Verify scope, prices, deadlines, taxes and payment terms before sending.", styles["SmallSP"])]
+    story += [sign, Spacer(1, 5), Paragraph("Template only — not legal advice. Estimates are examples, not a quote for any actual project. Verify scope, prices, deadlines, taxes and payment terms before sending.", styles["SmallSP"])]
     doc = SimpleDocTemplate(str(path), pagesize=A4, rightMargin=16*mm, leftMargin=16*mm, topMargin=17*mm, bottomMargin=20*mm, title=title, author="ScopePing")
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
